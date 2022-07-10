@@ -1,0 +1,78 @@
+<%- include('layouts/header.ejs'); -%>
+    <div class="wrapper">
+        <div class="form">
+            <div class="header">
+                <% if(locals.host){%>
+                    <div class="info">
+                        <div class="img-group">
+                            <img src="<%= host.image %>" alt="">
+                            <i class="fas fa-circle"></i>
+                        </div>
+                        <div class="details">
+                            <div class="name">
+                                <%= host.name %>
+                            </div>
+                            <div class="status">Online</div>
+                        </div>
+                    </div>
+                <% } %>
+                <a href="./logout">Logout</a>
+            </div>
+            <form class="form-search" id="search-user">
+                <input type="text" placeholder="Nhập tên để tìm..." id="input-search" name="search_user" 
+                <% if (locals.search_user) { %>
+                    value="<%= locals.search_user %>"
+                <% } %>>
+                <button type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+            <div class="user-list">
+                <% if(locals.users && locals.host){%>
+                    <% locals.users.forEach(function(user){ %>
+                        <% if(user.email != host.email) { %>
+                            <a href="./chat?id=<%= user._id %>">
+                                <div class="info">
+                                    <div class="img-group">
+                                        <img src="<%= user.image %>" alt="">
+                                    </div>
+                                    <div class="details user-list-details">
+                                        <div class="name">
+                                            <%= user.name %>
+                                        </div>
+                                        <% if(locals.messageArr) { %>
+                                            <% locals.messageArr.forEach(function(message){ %>
+                                                <% if(message.host_email == user.email && message.guest_email == host.email) { %>
+                                                    <div class="message-history">
+                                                        <span><%= message.message %></span><span style="font-size: 13px; color: #999"><%= message.createdAt %></span></div>
+                                                <% } %>
+                                                <% if(message.host_email == host.email && message.guest_email == user.email) { %>
+                                                    <div class="message-history"><span>Bạn: <%= message.message %></span><span style="font-size: 13px; color: #999"><%= message.createdAt %></span></div>
+                                                <% } %>
+                                            <% }); %>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </a>
+                        <% } %>
+                    <% }); %>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const userListDetails = document.querySelectorAll(".user-list-details")
+        
+        userListDetails.forEach(userListDetail => {
+            if (userListDetail.childNodes.length === 3) {
+                let div = document.createElement("div")
+                div.classList.add("message-history")
+                div.innerHTML = 'Chưa trò chuyện'
+                userListDetail.appendChild(div)
+            }
+        })
+        
+    </script>
+
+    <%- include('layouts/footer.ejs'); -%>

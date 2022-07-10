@@ -1,0 +1,57 @@
+<%- include('layouts/header.ejs'); -%>
+    <div class="wrapper">
+        <% if (locals.guest && locals.host && locals.messages) { %>
+            <div class="chat-area">
+                <div class="header">
+                    <a href="../" class="back"><i class="fas fa-arrow-left"></i></a>
+
+                    <div class="info">
+                        <div class="img-group">
+                            <img id="guest-img" src="<%= guest.image %>" alt="">
+                        </div>
+                        <div class="details">
+                            <div class="name" style="padding-top: 10px">
+                                <%= guest.name %>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="chat-box" id="chat-box">
+                    <% messages.forEach(function(message) { %>
+                        <% if (message.host_email==host.email) { %>
+                            <div class="chat host">
+                                <div class="details">
+                                    <%= message.message %>
+                                        <div class="time">
+                                            <%= message.createdAt %>
+                                        </div>
+                                </div>
+                            </div>
+                            <% } %>
+
+                                <% if (message.host_email !=host.email) { %>
+                                    <div class="chat guest">
+                                        <div class="avatar">
+                                            <img src="<%= guest.image %>" alt="">
+                                        </div>
+                                        <div class="details">
+                                            <%= message.message %>
+                                                <div class="time">
+                                                    <%= message.createdAt %>
+                                                </div>
+                                        </div>
+                                    </div>
+                                    <% } %>
+                                        <% }) %>
+                </div>
+                <form id="chat-form" action="/chat" class="typing-area" method="post">
+                    <input type="text" id="guest_email" value="<%= guest.email %>" hidden="">
+                    <input type="text" id="host_email" value="<%= host.email %>" hidden="">
+                    <input id="message" type="text" name="message" placeholder="Aa..." autocomplete="off" required>
+                    <button type="submit" id="send-chat"><i class="fab fa-telegram-plane"></i></button>
+                </form>
+            </div>
+            <% } %>
+    </div>
+    <%- include('layouts/footer.ejs'); -%>
